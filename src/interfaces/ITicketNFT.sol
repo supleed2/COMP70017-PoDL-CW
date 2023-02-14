@@ -60,9 +60,9 @@ interface ITicketNFT {
      *
      * - `from` cannot be the zero address.
      * - `to` cannot be the zero address.
-     * - `ticketID` ticket must be either:
-     *   - owned by `from`.
-     *   - approved to move this ticket by `approve`
+     * - the caller must either:
+     *   - own `ticketID`
+     *   - be approved to move this ticket using `approve`
      *
      * Emits a `Transfer` and an `Approval` event.
      */
