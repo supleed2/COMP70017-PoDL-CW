@@ -34,6 +34,7 @@ interface ISecondaryMarket {
      * such that it is held by this contract. Only the current owner of a specific
      * ticket is able to list that ticket on the secondary market. The purchase
      * `price` is specified in an amount of `PurchaseToken`.
+     * Note: Only non-expired and unused tickets can be listed
      */
     function listTicket(uint256 ticketID, uint256 price) external;
 
