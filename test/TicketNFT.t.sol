@@ -2,7 +2,6 @@
 pragma solidity ^0.8.10;
 
 import "forge-std/Test.sol";
-import "forge-std/console.sol";
 import "../src/contracts/PurchaseToken.sol";
 import "../src/contracts/TicketNFT.sol";
 

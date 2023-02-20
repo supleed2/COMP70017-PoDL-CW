@@ -165,7 +165,6 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
         require(price > 0, "listTicket: price cannot be 0");
         _listers[ticketID] = msg.sender;
         _prices[ticketID] = price;
-        // This uses a message call but is required as `transferFrom` is declared as `external`
         this.transferFrom(msg.sender, address(this), ticketID);
         emit Listing(ticketID, msg.sender, price);
     }
@@ -193,13 +192,11 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
             ticketRevenue
         );
         _purchaseToken.transferFrom(msg.sender, _admin, ticketFee);
-        // This uses a message call but is required as `transferFrom` is declared as `external`
         this.transferFrom(address(this), msg.sender, ticketID);
         _listers[ticketID] = address(0);
         _prices[ticketID] = 0;
         _holderNames[ticketID] = name;
         emit Purchase(msg.sender, ticketID, ticketPrice, name);
-        // emit Delisting(ticketID); // TODO: Apparently not needed in this coursework?
     }
 
     function delistTicket(uint256 ticketID) external {
