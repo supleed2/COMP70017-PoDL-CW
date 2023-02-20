@@ -428,7 +428,7 @@ contract SecondaryMarketTest is BaseTicketNFTTest {
 
     function testPurchase() public {
         uint256 ticketResalePrice = 200e18;
-        uint256 ticketResaleFee = 25 * (ticketResalePrice / 1000);
+        uint256 ticketResaleFee = 50 * (ticketResalePrice / 1000);
         uint256 ticketResaleRevenue = ticketResalePrice - ticketResaleFee;
         _buyTicket(alice, "alice");
         vm.prank(alice);

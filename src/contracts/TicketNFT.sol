@@ -19,7 +19,7 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
     mapping(uint256 => uint256) _prices;
     mapping(uint256 => bool) _ticketUsed;
     uint256 immutable _purchasePrice = 100e18;
-    uint256 immutable _saleFee = 25;
+    uint256 immutable _saleFee = 50;
 
     constructor(IERC20 purchaseToken) {
         _admin = msg.sender;
