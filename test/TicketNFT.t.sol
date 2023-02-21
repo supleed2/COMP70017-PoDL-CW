@@ -220,7 +220,7 @@ contract TicketNFTTest is BaseTicketNFTTest {
     function testExpiry() public {
         _buyTicket(alice, "alice");
         assertEq(nft.isExpiredOrUsed(1), false);
-        vm.warp(block.timestamp + 10 days - 1);
+        vm.warp(block.timestamp + 10 days);
         assertEq(nft.isExpiredOrUsed(1), false);
         vm.warp(block.timestamp + 1);
         assertEq(nft.isExpiredOrUsed(1), true);
@@ -253,7 +253,7 @@ contract TicketNFTTest is BaseTicketNFTTest {
     function testSetUsedExpired() public {
         _buyTicket(alice, "alice");
         assertEq(nft.isExpiredOrUsed(1), false);
-        vm.warp(block.timestamp + 10 days);
+        vm.warp(block.timestamp + 10 days + 1);
         vm.prank(address(this));
         vm.expectRevert("setUsed: ticket expired");
         nft.setUsed(1);
@@ -377,7 +377,7 @@ contract SecondaryMarketTest is BaseTicketNFTTest {
 
     function testListExpired() public {
         _buyTicket(alice, "alice");
-        vm.warp(block.timestamp + 10 days);
+        vm.warp(block.timestamp + 10 days + 1);
         vm.prank(alice);
         vm.expectRevert("listTicket: ticket is expired/used");
         nft.listTicket(1, 200e19);
@@ -473,7 +473,7 @@ contract SecondaryMarketTest is BaseTicketNFTTest {
         vm.prank(alice);
         nft.listTicket(1, 200e18);
         _topUpTokens(bob, 2);
-        vm.warp(block.timestamp + 10 days);
+        vm.warp(block.timestamp + 10 days + 1);
         vm.prank(bob);
         token.approve(address(nft), 200e18);
         vm.prank(bob);

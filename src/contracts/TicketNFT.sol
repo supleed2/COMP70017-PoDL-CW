@@ -121,7 +121,7 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
         require(ticketID <= _totalSupply, "setUsed: ticket doesn't exist");
         require(_ticketUsed[ticketID] == false, "setUsed: ticket already used");
         require(
-            _expiryTimes[ticketID] > block.timestamp,
+            _expiryTimes[ticketID] >= block.timestamp,
             "setUsed: ticket expired"
         );
         _ticketUsed[ticketID] = true;
@@ -133,7 +133,7 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
             "isExpiredOrUsed: ticket doesn't exist"
         );
         return (_ticketUsed[ticketID] ||
-            _expiryTimes[ticketID] <= block.timestamp);
+            _expiryTimes[ticketID] < block.timestamp);
     }
 
     function admin() external view returns (address) {
@@ -159,7 +159,7 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
         );
         require(
             _ticketUsed[ticketID] == false &&
-                _expiryTimes[ticketID] > block.timestamp,
+                _expiryTimes[ticketID] >= block.timestamp,
             "listTicket: ticket is expired/used"
         );
         require(price > 0, "listTicket: price cannot be 0");
@@ -179,7 +179,7 @@ contract TicketNFT is ITicketNFT, IPrimaryMarket, ISecondaryMarket {
         uint256 ticketRevenue = ticketPrice - ticketFee;
         require(
             _ticketUsed[ticketID] == false &&
-                _expiryTimes[ticketID] > block.timestamp,
+                _expiryTimes[ticketID] >= block.timestamp,
             "purchase: ticket is expired/used"
         );
         require(
