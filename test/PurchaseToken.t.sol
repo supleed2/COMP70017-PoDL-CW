@@ -30,8 +30,20 @@ contract PurchaseTokenTest is Test {
         assertEq(token.symbol(), "PT");
     }
 
+    function testAllowance() public {
+        assertEq(token.allowance(alice, bob), 0);
+    }
+
+    function testBalanceOf() public {
+        assertEq(token.balanceOf(alice), 0);
+    }
+
     function testDecimals() public {
         assertEq(token.decimals(), 18);
+    }
+
+    function testTotalSupply() public {
+        assertEq(token.totalSupply(), 0);
     }
 
     function testMint() public {
@@ -44,6 +56,12 @@ contract PurchaseTokenTest is Test {
         token.mint{value: 1e17}();
         assertEq(token.balanceOf(alice), 1e19);
         assertEq(token.totalSupply(), 1e19);
+    }
+
+    function testMintInvalid() public {
+        vm.prank(address(0));
+        vm.expectRevert("ERC20: mint to the zero address");
+        token.mint();
     }
 
     function testMintInsufficientFunds() public {
