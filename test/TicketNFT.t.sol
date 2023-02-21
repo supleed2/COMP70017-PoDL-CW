@@ -50,7 +50,7 @@ contract BaseTicketNFTTest is Test {
         nft = new TicketNFT(token);
     }
 
-    // Add Purchase Tokens to `recipient` to affort `amount` tickets
+    // Add Purchase Tokens to `recipient` to afford `amount` tickets
     function _topUpTokens(address recipient, uint256 amount) internal {
         vm.deal(recipient, amount * ticketPriceEth);
         vm.prank(recipient);
@@ -135,7 +135,7 @@ contract TicketNFTTest is BaseTicketNFTTest {
             "transferFrom: msg.sender must be current holder or approved sender"
         );
         nft.transferFrom(alice, bob, 1);
-    } // TODO: unnecessary?
+    }
 
     function testApproval() public {
         _buyTicket(alice, "alice");
@@ -335,7 +335,6 @@ contract PrimaryMarketTest is BaseTicketNFTTest {
     }
 }
 
-// Use vm.warp to jump forward when testing expired tickets
 contract SecondaryMarketTest is BaseTicketNFTTest {
     function testList() public {
         _buyTicket(alice, "alice");

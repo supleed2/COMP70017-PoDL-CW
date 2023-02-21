@@ -4,3 +4,5 @@ This is the skeleton for the coursework of the Principle of Distributed Ledgers 
 It contains [the interfaces](./src/interfaces) of the contracts to implement and an [ERC20 implementation](./src/contracts/PurchaseToken.sol).
 
 The repository uses [Foundry](https://book.getfoundry.sh/projects/working-on-an-existing-project).
+
+Coverage generated using `forge coverage --report lcov && genhtml lcov.info -o coverage --branch-coverage --function-coverage --legend --title "TicketNFT Coverage"`
