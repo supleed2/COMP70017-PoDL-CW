@@ -89,13 +89,48 @@ contract TicketNFTTest is BaseTicketNFTTest {
         assertEq(nft.balanceOf(alice), 0);
     }
 
+    function testBalanceOf() public {
+        assertEq(nft.balanceOf(alice), 0);
+        _buyTicket(alice, "alice");
+        assertEq(nft.balanceOf(alice), 1);
+    }
+
     function testHolderOf() public {
         _buyTicket(alice, "alice");
         assertEq(nft.holderOf(1), alice);
+        vm.expectRevert("holderOf: ticket doesn't exist");
+        nft.holderOf(2);
     }
 
     function testHolderNameOf() public {
         _buyTicket(alice, "alice");
+        assertEq(nft.holderNameOf(1), "alice");
+        vm.expectRevert("holderNameOf: ticket doesn't exist");
+        nft.holderNameOf(2);
+    }
+
+    function testUpdateHolderName() public {
+        _buyTicket(alice, "alice1");
+        assertEq(nft.holderNameOf(1), "alice1");
+        vm.prank(alice);
+        nft.updateHolderName(1, "alice2");
+        assertEq(nft.holderNameOf(1), "alice2");
+    }
+
+    function testUpdateHolderNameInvalid() public {
+        _buyTicket(alice, "alice1");
+        assertEq(nft.holderNameOf(1), "alice1");
+        vm.prank(alice);
+        vm.expectRevert("updateHolderName: ticket doesn't exist");
+        nft.updateHolderName(2, "alice2");
+    }
+
+    function testUpdateHolderNameUnauthorized() public {
+        _buyTicket(alice, "alice");
+        assertEq(nft.holderNameOf(1), "alice");
+        vm.prank(bob);
+        vm.expectRevert("updateHolderName: msg.sender doesn't own ticket");
+        nft.updateHolderName(1, "bob");
         assertEq(nft.holderNameOf(1), "alice");
     }
 
@@ -113,9 +148,6 @@ contract TicketNFTTest is BaseTicketNFTTest {
         assertEq(nft.getApproved(1), address(0));
         assertEq(nft.holderNameOf(1), "alice");
         assertEq(nft.isExpiredOrUsed(1), false);
-        vm.prank(bob);
-        nft.updateHolderName(1, "bob");
-        assertEq(nft.holderNameOf(1), "bob");
     }
 
     function testTransferInvalid() public {
@@ -146,12 +178,24 @@ contract TicketNFTTest is BaseTicketNFTTest {
         assertEq(nft.getApproved(1), bob);
     }
 
+    function testApprovalInvalid() public {
+        _buyTicket(alice, "alice");
+        vm.prank(alice);
+        vm.expectRevert("approve: ticket doesn't exist");
+        nft.approve(bob, 2);
+    }
+
     function testApprovalUnauthorized() public {
         _buyTicket(alice, "alice");
         vm.prank(bob);
         vm.expectRevert("approve: msg.sender doesn't own ticket");
         nft.approve(bob, 1);
         assertEq(nft.getApproved(1), address(0));
+    }
+
+    function testGetApprovedInvalid() public {
+        vm.expectRevert("getApproved: ticket doesn't exist");
+        nft.getApproved(1);
     }
 
     function testTransferFrom() public {
@@ -332,6 +376,21 @@ contract PrimaryMarketTest is BaseTicketNFTTest {
         assertEq(nft.getApproved(2), address(0));
         assertEq(nft.holderNameOf(2), "alice's plus one");
         assertEq(nft.isExpiredOrUsed(2), false);
+    }
+
+    function testPurchaseLimit() public {
+        // Set contract totalSupply to 999 using foundry cheats rather than minting repeatedly
+        vm.store(address(nft), bytes32(uint256(1)), bytes32(uint256(999)));
+        // for (uint256 i = 0; i < 999; i++) {
+        //     _buyTicket(alice, "alice");
+        // }
+        _buyTicket(alice, "alice"); // Buy 1000th ticket
+        _topUpTokens(alice, 1);
+        vm.prank(alice);
+        token.approve(address(nft), ticketPrice);
+        vm.prank(alice);
+        vm.expectRevert("purchase: maximum tickets reached");
+        nft.purchase("alice");
     }
 }
 
